@@ -9,7 +9,7 @@ attr_reader :balance , :journey , :entry_station
     @entry_station = nil
   end
 
-  # def balance
+  #  def balance
   #   balance = 0
   # end
 
