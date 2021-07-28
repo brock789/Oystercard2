@@ -24,19 +24,29 @@ describe Oystercard do
   #   subject.top_up(50)
   #   expect { subject.deduct(3) }.to change { subject.balance }.by -3
   # end
-    
+  
   it 'touches in for journey' do
     expect(subject).to respond_to(:touch_in)
   end
 
   it 'touches out for journey' do
-    expect(subject).to respond_to(:touch_out)
+    expect(subject).to respond_to(:touch_out).with(1).argument
   end
 
   it 'can tell if user is already in journey' do
     expect(subject).not_to be_in_journey
   end
+  it 'journey array is empty at start' do
 
+  expect(subject.instance_variable_get(:@journeysarray)).to eq([])
+  end
+  it 'stores a journey in the array' do
+    subject.top_up(5)
+    subject.touch_in(station)
+    subject.touch_out(station)
+    expect(subject.instance_variable_get(:@journeysarray)).not_to eq([])
+
+  end
   context 'to check card has enough balance' do
 
     before(:each) do
@@ -54,14 +64,14 @@ describe Oystercard do
 
     it 'takes a user out of a journey' do
       subject.touch_in(station)
-      subject.touch_out
+      subject.touch_out(station)
       expect(subject).not_to be_in_journey
     end
     
     it 'deducts money from the card when user touches out' do
       subject.touch_in(station)
-      subject.touch_out
-      expect { subject.touch_out }.to change { subject.balance }.by -(Oystercard::MINIMUM_FARE)
+      subject.touch_out(station)
+      expect { subject.touch_out(station) }.to change { subject.balance }.by -(Oystercard::MINIMUM_FARE)
     end
 
     it 'stores the station as entry station' do
